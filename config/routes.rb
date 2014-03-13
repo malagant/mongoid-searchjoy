@@ -1,4 +1,4 @@
-Searchjoy::Engine.routes.draw do
+Mongoid::Searchjoy::Engine.routes.draw do
   resources :searches, only: [:index] do
     get 'overview', on: :collection
   end

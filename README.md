@@ -1,6 +1,6 @@
 # Searchjoy
 
-:monkey_face: Search analytics made easy
+Search analytics made easy
 
 [See it in action](http://searchjoy.herokuapp.com/)
 
@@ -8,31 +8,22 @@
 - track conversions week over week
 - monitor the performance of top searches
 
-Works with Rails 3.1+ and any search engine, including Elasticsearch, Sphinx, and Solr
+Works with Rails 3.1/Rails 4 and any search engine, including Elasticsearch, Sphinx, and Solr
 
-:cupid: An amazing companion to [Searchkick](https://github.com/ankane/searchkick)
-
-:tangerine: Battle-tested at [Instacart](https://www.instacart.com)
+An amazing companion to [Searchkick](https://github.com/ankane/searchkick)
 
 ## Get Started
 
 Add this line to your application’s Gemfile:
 
 ```ruby
-gem "searchjoy"
-```
-
-And run the generator. This creates a migration to store searches.
-
-```sh
-rails generate searchjoy:install
-rake db:migrate
+gem "mongoid-searchjoy"
 ```
 
 Next, add the dashboard to your `config/routes.rb`.
 
 ```ruby
-mount Searchjoy::Engine, at: "admin/searchjoy"
+mount Mongoid::Searchjoy::Engine, at: 'admin/searchjoy'
 ```
 
 Be sure to protect the endpoint in production - see the [Authentication](#authentication) section for ways to do this.
@@ -42,9 +33,9 @@ Be sure to protect the endpoint in production - see the [Authentication](#authen
 Track searches by creating a record in the database.
 
 ```ruby
-Searchjoy::Search.create(
-  search_type: "Item", # typically the model name
-  query: "apple",
+Mongoid::Searchjoy::Search.create(
+  search_type: 'Item', # typically the model name
+  query: 'apple',
   results_count: 12
 )
 ```
@@ -52,27 +43,27 @@ Searchjoy::Search.create(
 With [Searchkick](https://github.com/ankane/searchkick), you can use the `track` option to do this automatically.
 
 ```ruby
-Item.search "apple", track: true
+Item.search 'apple', track: true
 ```
 
 If you want to track more attributes, add them to the `searchjoy_searches` table.  Then, pass the values to the `track` option.
 
 ```ruby
-Item.search "apple", track: {user_id: 1, source: "web"}
+Item.search 'apple', track: {user_id: 1, source: 'web'}
 ```
 
 It’s that easy.
 
 ### Track Conversions
 
-First, choose a conversion metric. At Instacart, an item added to the cart from the search results page counts as a conversion.
+First, choose a conversion metric. E.g. an item added to the cart from the search results page counts as a conversion.
 
 Next, when a user searches, keep track of the search id. With Searchkick, you can get the id with `@results.search.id`.
 
 When a user converts, find the record and call `convert`.
 
 ```ruby
-search = Searchjoy::Search.find params[:id]
+search = Mongoid::Searchjoy::Search.find params[:id]
 search.convert
 ```
 
@@ -100,7 +91,7 @@ ENV["SEARCHJOY_PASSWORD"] = "secret"
 
 ```ruby
 authenticate :user, lambda{|user| user.admin? } do
-  mount Searchjoy::Engine, at: "admin/searchjoy"
+  mount Mongoid::Searchjoy::Engine, at: "admin/searchjoy"
 end
 ```
 
@@ -108,10 +99,10 @@ end
 
 #### Time Zone
 
-To change the time zone, create an initializer `config/initializers/searchjoy.rb` with:
+To change the time zone, create an initializer `config/initializers/mongoid_searchjoy.rb` with:
 
 ```ruby
-Searchjoy.time_zone = "Pacific Time (US & Canada)" # defaults to Time.zone
+Mongoid::Searchjoy.time_zone = 'Europe/Berlin' # defaults to Time.zone
 ```
 
 #### Top Searches
@@ -119,7 +110,7 @@ Searchjoy.time_zone = "Pacific Time (US & Canada)" # defaults to Time.zone
 Change the number of top searches shown with:
 
 ```ruby
-Searchjoy.top_searches = 500 # defaults to 100
+Mongoid::Searchjoy.top_searches = 500 # defaults to 100
 ```
 
 #### Live Conversions
@@ -127,7 +118,7 @@ Searchjoy.top_searches = 500 # defaults to 100
 Show the conversion name in the live stream.
 
 ```ruby
-Searchjoy.conversion_name = proc{|model| model.name }
+Mongoid::Searchjoy.conversion_name = proc { |model| model.name }
 ```
 
 ## TODO
@@ -141,7 +132,7 @@ Searchjoy.conversion_name = proc{|model| model.name }
 
 Everyone is encouraged to help improve this project. Here are a few ways you can help:
 
-- [Report bugs](https://github.com/ankane/searchjoy/issues)
-- Fix bugs and [submit pull requests](https://github.com/ankane/searchjoy/pulls)
+- [Report bugs](https://github.com/malagant/mongoid-searchjoy/issues)
+- Fix bugs and [submit pull requests](https://github.com/malagant/mongoid-searchjoy/pulls)
 - Write, clarify, or fix documentation
 - Suggest or add new feature

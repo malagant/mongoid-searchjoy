@@ -10,8 +10,7 @@ module Mongoid
       field :results_count, type: Integer
       field :convertable_type, type: String
 
-      t.string :convertable_type
-      t.timestamp :converted_at
+      #t.timestamp :converted_at
 
       belongs_to :convertable, polymorphic: true
 

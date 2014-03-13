@@ -22,19 +22,19 @@ module Mongoid
     # conversion name
     mattr_accessor :conversion_name
   end
+end
 
-  if defined?(Searchkick)
-    module Searchkick
-      module Search
-        include Searchjoy::Track
+if defined?(Searchkick)
+  module Searchkick
+    module Search
+      include Mongoid::Searchjoy::Track
 
-        alias_method :search_without_track, :search
-        alias_method :search, :search_with_track
-      end
+      alias_method :search_without_track, :search
+      alias_method :search, :search_with_track
+    end
 
-      class Results
-        attr_accessor :search
-      end
+    class Results
+      attr_accessor :search
     end
   end
 end
