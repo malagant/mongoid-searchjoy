@@ -40,7 +40,7 @@ module Mongoid
       protected
 
       def set_search_types
-        @search_types = Mongoid::Searchjoy::Search.uniq.pluck(:search_type).sort
+        @search_types = Mongoid::Searchjoy::Search.all.uniq.map(&:search_type).sort
       end
 
       def set_search_type

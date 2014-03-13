@@ -9,8 +9,7 @@ module Mongoid
       field :normalized_query, type: String
       field :results_count, type: Integer
       field :convertable_type, type: String
-
-      #t.timestamp :converted_at
+      field :converted_at, type: Time
 
       belongs_to :convertable, polymorphic: true
 
@@ -22,7 +21,7 @@ module Mongoid
       before_save :set_normalized_query
 
       def convert(convertable = nil)
-        if !converted?
+        unless converted?
           self.converted_at = Time.now
           self.convertable = convertable
           save(validate: false)
